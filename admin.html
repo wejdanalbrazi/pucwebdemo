@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ PROMPTS[lang]['dashboard_title'] }}</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+  </head>
+  <body
+    class="bg-gray-100 font-sans"
+    dir="{{ 'rtl' if lang == 'Arabic' else 'ltr' }}"
+  >
+    <div class="container mx-auto p-4">
+      <!-- Header -->
+      <div
+        class="flex justify-between items-center bg-white p-4 rounded-lg shadow mb-6"
+      >
+        <div class="flex items-center space-x-3">
+          <img src="/static/images/logo.png" alt="Logo" class="h-10 w-auto" />
+          <h1 class="text-2xl font-bold text-gray-800">PUC Stats</h1>
+        </div>
+        <div class="flex space-x-2">
+          <button
+            class="lang-toggle bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onclick="toggleLanguage('English')"
+          >
+            English
+          </button>
+          <button
+            class="lang-toggle bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+            onclick="toggleLanguage('Arabic')"
+          >
+            عربي
+          </button>
+          <button
+            class="clear-data bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600"
+            onclick="clearData()"
+          >
+            {{ 'Clear Data' if lang == 'English' else 'مسح البيانات' }}
+          </button>
+          <a
+            href="{{ url_for('logout') }}"
+            class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+            >{{ 'Logout' if lang == 'English' else 'تسجيل الخروج' }}</a
+          >
+        </div>
+      </div>
+
+      <!-- Analytics -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-lg font-semibold mb-4">
+            {{ 'Chat Analytics' if lang == 'English' else 'تحليلات الدردشة' }}
+          </h2>
+          <canvas id="languageChart" height="200"></canvas>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow">
+          <h2 class="text-lg font-semibold mb-4">
+            {{ 'Support Request Analytics' if lang == 'English' else 'تحليلات
+            طلبات الدعم' }}
+          </h2>
+          <canvas id="departmentChart" height="200"></canvas>
+        </div>
+      </div>
+
+      <!-- Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="bg-white p-4 rounded-lg shadow text-center">
+          <h3 class="text-sm font-medium text-gray-600">total-chats</h3>
+          <p class="text-2xl font-bold text-gray-800">{{ chat_count }}</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow text-center">
+          <h3 class="text-sm font-medium text-gray-600">total-messages</h3>
+          <p class="text-2xl font-bold text-gray-800">{{ total_messages }}</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow text-center">
+          <h3 class="text-sm font-medium text-gray-600">avg-messages</h3>
+          <p class="text-2xl font-bold text-gray-800">{{ avg_messages }}</p>
+        </div>
+        <div class="bg-white p-4 rounded-lg shadow text-center">
+          <h3 class="text-sm font-medium text-gray-600">
+            {{ PROMPTS[lang]['language_dist'] }}
+          </h3>
+          <p class="text-sm text-gray-800">
+            English: {{ language_dist['English'] }}, Arabic: {{
+            language_dist['Arabic'] }}, Unknown: {{ language_dist[None] }}
+          </p>
+        </div>
+      </div>
+
+      <!-- Filters -->
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <h2 class="text-lg font-semibold mb-4">
+          {{ 'Filters' if lang == 'English' else 'الفلاتر' }}
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <input
+            type="text"
+            id="search-bar"
+            class="border rounded px-3 py-2"
+            placeholder="{{ PROMPTS[lang]['search_placeholder'] }}"
+            onkeyup="filterData()"
+          />
+          <select
+            id="language-filter"
+            class="border rounded px-3 py-2"
+            onchange="filterData()"
+          >
+            <option value="All">
+              {{ 'All Languages' if lang == 'English' else 'جميع اللغات' }}
+            </option>
+            <option value="English">English</option>
+            <option value="Arabic">Arabic</option>
+          </select>
+          <select
+            id="department-filter"
+            class="border rounded px-3 py-2"
+            onchange="filterData()"
+          >
+            <option value="All">
+              {{ 'All Departments' if lang == 'English' else 'جميع الأقسام' }}
+            </option>
+            {% for dept in departments %}
+            <option value="{{ dept }}">{{ dept }}</option>
+            {% endfor %}
+          </select>
+          <div class="flex space-x-2">
+            <input
+              type="date"
+              id="start-date"
+              class="border rounded px-3 py-2"
+              onchange="filterData()"
+            />
+            <input
+              type="date"
+              id="end-date"
+              class="border rounded px-3 py-2"
+              onchange="filterData()"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Support Requests -->
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold">
+            {{ 'Support Requests' if lang == 'English' else 'طلبات الدعم' }}
+          </h2>
+          <a
+            href="{{ url_for('export_support') }}"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >{{ PROMPTS[lang]['export'] }}</a
+          >
+        </div>
+        <div class="overflow-x-auto">
+          <table class="support-table w-full text-sm">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="p-2">
+                  {{ 'Session ID' if lang == 'English' else 'معرف الجلسة' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Language' if lang == 'English' else 'اللغة' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Department' if lang == 'English' else 'القسم' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Name' if lang == 'English' else 'الاسم' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Civil ID' if lang == 'English' else 'رقم الهوية' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Contact Number' if lang == 'English' else 'رقم الاتصال' }}
+                </th>
+                <th class="p-2">
+                  {{ 'University' if lang == 'English' else 'الجامعة' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Message' if lang == 'English' else 'الرسالة' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Timestamp' if lang == 'English' else 'الوقت' }}
+                </th>
+              </tr>
+            </thead>
+            <tbody id="support-table-body">
+              {% for req in support_requests %}
+              <tr class="support-row border-b hover:bg-gray-50">
+                <td class="p-2">{{ req.session_id }}</td>
+                <td class="p-2">{{ req.language or 'Unknown' }}</td>
+                <td class="p-2">{{ req.department }}</td>
+                <td class="p-2">{{ req.name }}</td>
+                <td class="p-2">{{ req.civil_id }}</td>
+                <td class="p-2">{{ req.contact_number }}</td>
+                <td class="p-2">{{ req.university or 'Not provided' }}</td>
+                <td class="p-2 truncate max-w-xs">{{ req.message }}</td>
+                <td class="p-2">{{ req.timestamp }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-between mt-4">
+          <button
+            id="prev-support-page"
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:opacity-50"
+            disabled
+          >
+            {{ 'Previous' if lang == 'English' else 'السابق' }}
+          </button>
+          <span id="support-page-info" class="text-gray-600"
+            >{{ 'Page 1 of 1' if lang == 'English' else 'صفحة 1 من 1' }}</span
+          >
+          <button
+            id="next-support-page"
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:opacity-50"
+            disabled
+          >
+            {{ 'Next' if lang == 'English' else 'التالي' }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Chat Sessions -->
+      <div class="bg-white p-4 rounded-lg shadow mb-6">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-lg font-semibold">
+            {{ 'Chat Sessions' if lang == 'English' else 'جلسات الدردشة' }}
+          </h2>
+          <a
+            href="{{ url_for('export_chats') }}"
+            class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >{{ PROMPTS[lang]['export'] }}</a
+          >
+        </div>
+        <div class="overflow-x-auto">
+          <table class="session-table w-full text-sm">
+            <thead>
+              <tr class="bg-gray-200">
+                <th class="p-2">
+                  {{ 'Session ID' if lang == 'English' else 'معرف الجلسة' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Language' if lang == 'English' else 'اللغة' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Start Time' if lang == 'English' else 'وقت البدء' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Message Count' if lang == 'English' else 'عدد الرسائل' }}
+                </th>
+                <th class="p-2">
+                  {{ 'Actions' if lang == 'English' else 'الإجراءات' }}
+                </th>
+              </tr>
+            </thead>
+            <tbody id="session-table-body">
+              {% for session in sessions %}
+              <tr class="session-row border-b hover:bg-gray-50">
+                <td class="p-2">{{ session.session_id }}</td>
+                <td class="p-2">{{ session.language }}</td>
+                <td class="p-2">{{ session.start_time }}</td>
+                <td class="p-2">{{ session.message_count }}</td>
+                <td class="p-2">
+                  <button
+                    class="text-blue-500 hover:underline"
+                    onclick="toggleChat('{{ session.session_id }}')"
+                  >
+                    {{ 'View Chat' if lang == 'English' else 'عرض الدردشة' }}
+                  </button>
+                </td>
+              </tr>
+              <tr
+                id="chat-{{ session.session_id }}"
+                class="chat-details hidden"
+              >
+                <td colspan="5" class="p-4 bg-gray-50">
+                  <div id="chat-messages-{{ session.session_id }}"></div>
+                  <div
+                    id="support-details-{{ session.session_id }}"
+                    class="mt-4"
+                  ></div>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div class="flex justify-between mt-4">
+          <button
+            id="prev-session-page"
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:opacity-50"
+            disabled
+          >
+            {{ 'Previous' if lang == 'English' else 'السابق' }}
+          </button>
+          <span id="session-page-info" class="text-gray-600"
+            >{{ 'Page 1 of 1' if lang == 'English' else 'صفحة 1 من 1' }}</span
+          >
+          <button
+            id="next-session-page"
+            class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 disabled:opacity-50"
+            disabled
+          >
+            {{ 'Next' if lang == 'English' else 'التالي' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let currentLang = "{{ lang }}";
+      const sessionsData = {{ sessions | tojson }};
+      const supportData = {{ support_requests | tojson }};
+      const pageSize = 10;
+      let currentSessionPage = 1;
+      let currentSupportPage = 1;
+
+      function toggleLanguage(lang) {
+        window.location.href = `/admin?language=${lang}`;
+      }
+
+      function clearData() {
+        if (confirm(currentLang === 'Arabic' ? 'هل أنت متأكد من مسح جميع بيانات الدردشة وطلبات الدعم؟' : 'Are you sure you want to clear all chat and support request data?')) {
+          fetch('/admin/clear_data', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' }
+          })
+            .then(response => response.json())
+            .then(data => {
+              if (data.success) {
+                alert(currentLang === 'Arabic' ? 'تم مسح البيانات بنجاح!' : 'Data cleared successfully!');
+                window.location.reload();
+              } else {
+                alert(currentLang === 'Arabic' ? 'فشل في مسح البيانات: ' + data.error : 'Failed to clear data: ' + data.error);
+              }
+            })
+            .catch(error => {
+              console.error('Error clearing data:', error);
+              alert(currentLang === 'Arabic' ? 'خطأ في الاتصال بالخادم!' : 'Error connecting to server!');
+            });
+        }
+      }
+
+      function filterData() {
+        const search = document.getElementById('search-bar').value.toLowerCase();
+        const language = document.getElementById('language-filter').value;
+        const department = document.getElementById('department-filter').value;
+        const startDate = document.getElementById('start-date').value;
+        const endDate = document.getElementById('end-date').value;
+
+        const url = new URL(window.location);
+        if (language !== 'All') url.searchParams.set('language', language);
+        else url.searchParams.delete('language');
+        if (department !== 'All') url.searchParams.set('department', department);
+        else url.searchParams.delete('department');
+        if (startDate) url.searchParams.set('start_date', startDate);
+        else url.searchParams.delete('start_date');
+        if (endDate) url.searchParams.set('end_date', endDate);
+        else url.searchParams.delete('end_date');
+        window.location.href = url;
+      }
+
+      function renderSessions(page) {
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const filteredSessions = sessionsData.filter(s => {
+          const sessionId = s.session_id.toLowerCase();
+          return sessionId.includes(document.getElementById('search-bar').value.toLowerCase());
+        });
+        const pageData = filteredSessions.slice(start, end);
+        const tbody = document.getElementById('session-table-body');
+        tbody.innerHTML = '';
+        pageData.forEach(session => {
+          const tr = document.createElement('tr');
+          tr.className = 'session-row border-b hover:bg-gray-50';
+          tr.innerHTML = `
+            <td class="p-2">${session.session_id}</td>
+            <td class="p-2">${session.language}</td>
+            <td class="p-2">${session.start_time}</td>
+            <td class="p-2">${session.message_count}</td>
+            <td class="p-2">
+              <button class="text-blue-500 hover:underline" onclick="toggleChat('${session.session_id}')">
+                ${currentLang === 'Arabic' ? 'عرض الدردشة' : 'View Chat'}
+              </button>
+            </td>
+          `;
+          tbody.appendChild(tr);
+          const detailTr = document.createElement('tr');
+          detailTr.id = `chat-${session.session_id}`;
+          detailTr.className = 'chat-details hidden';
+          detailTr.innerHTML = `
+            <td colspan="5" class="p-4 bg-gray-50">
+              <div id="chat-messages-${session.session_id}"></div>
+              <div id="support-details-${session.session_id}" class="mt-4"></div>
+            </td>
+          `;
+          tbody.appendChild(detailTr);
+        });
+        updatePagination('session', filteredSessions.length, page);
+      }
+
+      function renderSupport(page) {
+        const start = (page - 1) * pageSize;
+        const end = start + pageSize;
+        const filteredSupport = supportData.filter(req => {
+          const sessionId = req.session_id.toLowerCase();
+          return sessionId.includes(document.getElementById('search-bar').value.toLowerCase());
+        });
+        const pageData = filteredSupport.slice(start, end);
+        const tbody = document.getElementById('support-table-body');
+        tbody.innerHTML = '';
+        pageData.forEach(req => {
+          const tr = document.createElement('tr');
+          tr.className = 'support-row border-b hover:bg-gray-50';
+          tr.innerHTML = `
+            <td class="p-2">${req.session_id}</td>
+            <td class="p-2">${req.language || 'Unknown'}</td>
+            <td class="p-2">${req.department}</td>
+            <td class="p-2">${req.name}</td>
+            <td class="p-2">${req.civil_id}</td>
+            <td class="p-2">${req.contact_number}</td>
+            <td class="p-2">${req.university || 'Not provided'}</td>
+            <td class="p-2 truncate max-w-xs">${req.message}</td>
+            <td class="p-2">${req.timestamp}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+        updatePagination('support', filteredSupport.length, page);
+      }
+
+      function updatePagination(type, total, page) {
+        const totalPages = Math.ceil(total / pageSize);
+        const pageInfo = document.getElementById(`${type}-page-info`);
+        const prevButton = document.getElementById(`prev-${type}-page`);
+        const nextButton = document.getElementById(`next-${type}-page`);
+        pageInfo.textContent = currentLang === 'Arabic' ? `صفحة ${page} من ${totalPages}` : `Page ${page} of ${totalPages}`;
+        prevButton.disabled = page === 1;
+        nextButton.disabled = page === totalPages;
+        prevButton.onclick = () => type === 'session' ? renderSessions(page - 1) : renderSupport(page - 1);
+        nextButton.onclick = () => type === 'session' ? renderSessions(page + 1) : renderSupport(page + 1);
+      }
+
+      function toggleChat(sessionId) {
+        const detailRow = document.getElementById(`chat-${sessionId}`);
+        const isHidden = detailRow.classList.contains('hidden');
+        if (isHidden) {
+          fetch(`/admin/chats/${sessionId}`)
+            .then(response => response.json())
+            .then(data => {
+              const chatMessages = document.getElementById(`chat-messages-${sessionId}`);
+              const supportDetails = document.getElementById(`support-details-${sessionId}`);
+              chatMessages.innerHTML = '<h3 class="text-md font-semibold mb-2">' +
+                (currentLang === 'Arabic' ? 'تاريخ الدردشة' : 'Chat History') + '</h3>';
+              data.chats.forEach(chat => {
+                const div = document.createElement('div');
+                div.className = `chat-message ${chat.sender} p-2 mb-2 rounded ${chat.sender === 'user' ? 'bg-blue-100' : 'bg-green-100'}`;
+                if (chat.language === 'Arabic') div.setAttribute('lang', 'ar');
+                div.innerHTML = `
+                  <strong>${chat.sender === 'user' ? (currentLang === 'Arabic' ? 'المستخدم' : 'User') :
+                    (currentLang === 'Arabic' ? 'الروبوت' : 'Bot')}:</strong>
+                  ${chat.message.replace(/\n/g, '<br>')} <br>
+                  <small class="text-gray-500">${chat.timestamp}</small>
+                `;
+                chatMessages.appendChild(div);
+              });
+              if (data.support_requests.length > 0) {
+                const header = document.createElement('h4');
+                header.className = 'text-md font-semibold mb-2';
+                header.textContent = currentLang === 'Arabic' ? 'تفاصيل طلب الدعم' : 'Support Request Details';
+                supportDetails.appendChild(header);
+                data.support_requests.forEach(req => {
+                  const div = document.createElement('div');
+                  div.className = 'support-detail p-2 mb-2 rounded bg-yellow-100';
+                  if (req.language === 'Arabic') div.setAttribute('lang', 'ar');
+                  div.innerHTML = `
+                    <strong>${currentLang === 'Arabic' ? 'القسم' : 'Department'}:</strong> ${req.department}<br>
+                    <strong>${currentLang === 'Arabic' ? 'الاسم' : 'Name'}:</strong> ${req.name}<br>
+                    <strong>${currentLang === 'Arabic' ? 'رقم الهوية' : 'Civil ID'}:</strong> ${req.civil_id}<br>
+                    <strong>${currentLang === 'Arabic' ? 'رقم الاتصال' : 'Contact Number'}:</strong> ${req.contact_number}<br>
+                    <strong>${currentLang === 'Arabic' ? 'الجامعة' : 'University'}:</strong> ${req.university}<br>
+                    <strong>${currentLang === 'Arabic' ? 'الرسالة' : 'Message'}:</strong> ${req.message.replace(/\n/g, '<br>')}<br>
+                    <small class="text-gray-500">${req.timestamp}</small>
+                  `;
+                  supportDetails.appendChild(div);
+                });
+              }
+              detailRow.classList.remove('hidden');
+            })
+            .catch(error => console.error('Error loading chat:', error));
+        } else {
+          detailRow.classList.add('hidden');
+        }
+      }
+
+      // Initialize charts
+      const languageCtx = document.getElementById('languageChart').getContext('2d');
+      new Chart(languageCtx, {
+        type: 'pie',
+        data: {
+          labels: ['English', 'Arabic', 'Unknown'],
+          datasets: [{
+            data: [{{ language_counts['English'] }}, {{ language_counts['Arabic'] }}, {{ language_counts['Unknown'] }}],
+            backgroundColor: ['#3B82F6', '#10B981', '#6B7280']
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: { legend: { position: 'top' } }
+        }
+      });
+
+      const departmentCtx = document.getElementById('departmentChart').getContext('2d');
+      new Chart(departmentCtx, {
+        type: 'bar',
+        data: {
+          labels: {{ departments | tojson }},
+          datasets: [{
+            label: currentLang === 'Arabic' ? 'عدد الطلبات' : 'Request Count',
+            data: {{ department_counts.values() | list | tojson }},
+            backgroundColor: '#3B82F6'
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: { y: { beginAtZero: true } }
+        }
+      });
+
+      // Initialize pagination
+      renderSessions(1);
+      renderSupport(1);
+    </script>
+  </body>
+</html>

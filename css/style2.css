@@ -1,0 +1,439 @@
+*{
+  font-family: "Readex Pro", sans-serif;
+
+}
+.small-text {
+  color: #5b5b5b;
+  font-size: 14px;
+  font-weight: bold;
+  padding: 8px 16px;
+  border-radius: 50px;
+  letter-spacing: 0.2px;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+}
+ul li {
+  list-style: none;
+}
+
+a {
+  font-weight: normal;
+  text-decoration: none !important;
+  transition: all 0.4s ease;
+}
+a:hover {
+  color: #004e91 !important;
+}
+
+.navbar-brand .uil {
+  font-size: 40px;
+}
+
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+  letter-spacing: -1px;
+  
+  direction: rtl;
+  align-items: right;
+  text-align: right;
+}
+h1 {
+  color: #333;
+  font-family: "Readex Pro", sans-serif;
+}
+h2 {
+  color: #004e91;
+  font-size: 2.4em;
+  font-weight: bold;
+}
+
+h3 {
+  color: #484848;
+}
+
+h3,
+b,
+strong {
+  font-weight: bold;
+}
+.about8 .about8-text p {
+  margin-top: 30px;
+  margin-right: 15px;
+  font-family: "Readex Pro", sans-serif;
+}
+
+.custom-btn8 {
+  background: #eee;
+  color: #5b5b5b;
+  direction: rtl;
+  align-items: right;
+  text-align: right;
+  font-weight: bold;
+  border-radius: 50px;
+  padding: 13px 29px;
+  font-size: 14px;
+  line-height: normal;
+  overflow: hidden;
+  transition: all 0.4s ease;
+}
+.custom-btn8:hover {
+  color: #e1eef4;
+}
+.custom-btn8.custom-btn8-bg {
+  background: #004e91;
+  color: #ffffff;
+}
+.custom-btn8.custom-btn8-bg:hover {
+  background: #004e91;
+  color: #ffffff !important;
+}
+
+.animated {
+  position: relative;
+}
+
+.animated-info {
+  display: inline-block;
+  vertical-align: top;
+  margin-top: 5px;
+  min-width: 260px;
+  position: relative;
+}
+
+.animated-item {
+  color: #004e91;
+}
+
+.animated-item {
+  font-size: 38px;
+  line-height: inherit;
+  display: block;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+
+  top: 0;
+  right: 0;
+  left: 0;
+  animation: BottomTotop 6s linear infinite 0s;
+}
+.animated-item:nth-child(2n + 2) {
+  animation-delay: 2s;
+}
+.animated-item:nth-child(3n + 3) {
+  animation-delay: 4s;
+}
+
+@keyframes BottomTotop {
+  0% {
+    opacity: 0;
+  }
+  5% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  10% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  25% {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+  30% {
+    opacity: 0;
+    transform: translateY(5px);
+  }
+  80% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.timeline-wrapper {
+  position: relative;
+  direction: rtl;
+}
+.timeline-wrapper:last-child:before {
+  height: 0;
+  direction: rtl;
+}
+.timeline-wrapper:before {
+  content: "";
+  background: #004e91;
+  width: 3px;
+  height: 100%;
+  position: absolute;
+  right: 38px;
+}
+
+.timeline-yr {
+  background: #004e91;
+  border-radius: 100%;
+  position: absolute;
+  width: 75px;
+  height: 75px;
+  line-height: 75px;
+  right: 0;
+  text-align: center;
+}
+.timeline-yr span {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: bold;
+  display: block;
+  line-height: 75px;
+}
+
+.timeline-info {
+  display: inline-block;
+  vertical-align: top;
+  max-width: 432px;
+  margin-right: 6em;
+  font-family: 'Readex Pro', sans-serif;
+  text-align: right;
+  color: #004e91;
+}
+.timeline-info h3 span {
+  font-family: 'Readex Pro', sans-serif;
+  text-align: right;
+  color: #004e91;
+}
+.timeline-info small  {
+  font-family: 'Readex Pro', sans-serif;
+  color: #001d36;
+  font-size: 16px;
+  text-align: right;
+  align-items: right;
+  font-weight: bold;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 15px;
+  
+}
+.timeline-info p {
+  font-family: 'Readex Pro', sans-serif;
+  text-align: right;
+  margin-top: 10px;
+  
+}
+
+.google-map iframe {
+  width: 100%;
+}
+
+.contact-info6 {
+  background: #004e91;
+  border-radius: 0 0 3px 3px;
+  position: relative;
+  bottom: 8px;
+}
+.contact-info6 p,
+.contact-info6 a {
+  color: #f7f3f3;
+}
+
+@media (min-width: 1270px) {
+  .owl-theme .owl-dots {
+    position: relative;
+    bottom: 50px;
+  }
+}
+.about8-image img {
+  margin-top: 40px;
+}
+@media (max-width: 1270px) {
+  .full-screen {
+    padding-bottom: 4rem;
+  }
+
+  .color-mode {
+    display: none;
+  }
+
+  .about8-image {
+    margin-top: 4em;
+    margin-top: 50px;
+  }
+
+  .mobile-mt-2,
+  .contact-form {
+    margin-top: 2em;
+  }
+
+  .contact-info6 {
+    padding: 0 2rem;
+  }
+}
+
+@media (max-width: 767px) {
+  h1 {
+    font-size: 2.4em;
+  }
+
+  h2 {
+    font-size: 2em;
+    direction: rtl;
+    align-items: right;
+  
+    text-align: right;
+   
+  }
+
+  .animated-item {
+    font-size: 28px;
+  }
+
+  .navbar-collapse {
+    background: #ffffff;
+    text-align: center;
+    padding-bottom: 20px;
+  }
+
+  .navbar-expand-sm .navbar-nav .nav-link {
+    padding: 3px 20px;
+  }
+}
+@media (max-width: 580px) {
+  .animated-info {
+    min-width: 200px;
+  }
+  .animated-item {
+    font-size: 30px;
+    f
+  }
+
+  .custom-btn8-group {
+    text-align: center;
+  }
+
+  .custom-btn8 {
+    display: block;
+    margin: 10px 0;
+  }
+
+  .owl-theme .owl-nav {
+    display: none;
+  }
+
+  .timeline-info small {
+    display: block;
+    margin: 10px 0 0 0;
+  }
+}
+
+@media (max-width: 4020px) {
+  .animated-text {
+    margin-top: 30px;
+    margin-right: 15px;
+  }
+
+  .about8-text {
+    text-align: center;
+  }
+
+  .full-screen {
+    padding: 4rem 0;
+  }
+
+  .mobile-block {
+    display: block;
+  }
+
+  .contact-info6 {
+    flex-direction: column;
+  }
+}
+
+.faq-container {
+  max-width: 800px; /* Limit the width for better readability */
+  margin: 50px auto; /* Center the container and add vertical spacing */
+  padding: 20px;
+  font-family: "Readex Pro", sans-serif;
+  color: #333; /* Base text color */
+  direction: rtl;
+  justify-content: right;
+  align-items: right;
+  text-align: right;
+
+}
+
+/* Style for the main title */
+.faq-container h1 {
+  text-align: center;
+  margin-bottom: 40px;
+
+  color: #004e91;
+  font-family: "Readex Pro", sans-serif;
+}
+
+/* Style for each FAQ item */
+.faq-item {
+  border-bottom: 1px solid #ddd; /* Light gray border between items */
+  overflow: hidden; /* Hide overflowing content */
+}
+
+/* Style for the question buttons */
+.faq-question {
+  background-color: #fdfdfd; /* Light gray background */
+  width: 100%;
+  padding: 20px;
+  text-align: left;
+  font-family: "Readex Pro", sans-serif;
+  color: #004e91;
+  font-size: 18px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  position: relative;
+  direction: rtl;
+  justify-content: right;
+  align-items: right;
+  text-align: right;
+  transition: background-color 0.3s ease; /* Smooth background transition on hover */
+}
+
+/* Hover effect for question buttons */
+.faq-question:hover {
+  background-color: #d0d7de; /* Slightly darker gray on hover */
+}
+
+/* Style for the arrow icon */
+.faq-question .arrow {
+  position: absolute;
+  left: 20px;
+  transition: transform 0.3s ease; /* Smooth rotation transition */
+  color: #004e91;
+}
+
+/* Rotate the arrow when the question is active (expanded) */
+.faq-question .active .arrow {
+  transform: rotate(180deg); /* Rotate arrow 180 degrees */
+}
+
+/* Style for the answer sections */
+.faq-answer {
+  font-family: "Readex Pro", sans-serif;
+  max-height: 0; /* Initially hide the answer */
+  overflow: hidden;
+  transition: max-height 0.3s ease; /* Smooth transition for expanding */
+  background-color: #fff; /* White background for answers */
+}
+
+/* Style for the answer text */
+.faq-answer p {
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.5; /* Increase line height for better readability */
+  color: #555; /* Slightly lighter text color for answers */
+}
