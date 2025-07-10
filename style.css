@@ -293,7 +293,7 @@ body {
 .header {
   background-color: #fff;
   position: relative;
-  
+
 }
 .header .navbar-collapse {
   padding: 0;
@@ -339,7 +339,6 @@ body {
 .header .navbar {
   background: none;
   box-shadow: none;
-  position: relative;
   border: none;
   margin: 0;
   height: 0px;
@@ -359,8 +358,7 @@ body {
   font-size: 13px;
   font-weight: 700;
   text-transform: capitalize;
-  padding:  5px;
-  cursor: pointer;
+  padding: 25px 15px;
   position: relative;
   display: inline-block;
 }
@@ -4694,7 +4692,7 @@ Category Post
   font-weight: 500;
   line-height: 30px;
 }
-/* الروية والمهمه */
+/* Ø§Ù„Ø±ÙˆÙŠØ© ÙˆØ§Ù„Ù…Ù‡Ù…Ù‡ */
 
 .single-box {
   padding: 20px;
@@ -5113,7 +5111,7 @@ select {
 }
 
 /* ====================
-استفسار 
+Ø§Ø³ØªÙØ³Ø§Ø± 
 ====================*/
 
 
@@ -5201,5 +5199,4 @@ box-sizing: border-box;
   border: none;
   margin-left: 50px;
 }
-
 
