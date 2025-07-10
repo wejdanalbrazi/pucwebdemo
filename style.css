@@ -359,7 +359,8 @@ body {
   font-size: 13px;
   font-weight: 700;
   text-transform: capitalize;
-  padding: 10px 5px;
+  padding:  5px;
+  cursor: pointer;
   position: relative;
   display: inline-block;
 }
