@@ -1,4 +1,6 @@
-@media only screen and (min-width: 768px) and (max-width: 991px) {
+
+/* Tablet Screen */
+@media only screen and (min-width: 769px) and (max-width: 991px) {
   /* Header Sticky */
   .section {
     padding: 70px 0px;
@@ -53,8 +55,8 @@
   }
   .header .header-inner .get-quote {
     margin-top: 12px;
-    display: none;
     margin: 0;
+    display: inline-block !important;
   }
   .header .nav li a {
     font-size: 13px;
@@ -373,20 +375,18 @@
   .header .header-inner {
     width: 100%;
     z-index: 333;
-    display: block;
+    position: absolute;
     position: relative;
     padding-bottom: 20px;
     background: #fff;
   }
   .slicknav_menu {
     display: block;
-    padding: 10px 15px;
-    z-index: 999;
   }
   .slicknav_menu {
     display: block;
     background: transparent;
-    margin: 0;
+    padding: 0;
   }
   .slicknav_btn {
     background: transparent;
@@ -407,10 +407,6 @@
   .slicknav_btn {
     background: transparent;
     padding: 0;
-    display: block;
-    float: right;
-    cursor: pointer;
-
     margin-top: 28px;
   }
   .slicknav_menu .slicknav_icon-bar {
@@ -421,7 +417,6 @@
     color: #2c2d3f;
     margin: 0;
     font-size: 0.875em;
-    display: none;
     background: transparent;
   }
   .slicknav_nav li {
@@ -484,7 +479,7 @@
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
   }
   .header .main-menu {
-    display: block;
+    display: none;
   }
   .header .widget-main {
     float: right;
