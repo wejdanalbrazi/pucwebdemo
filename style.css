@@ -293,6 +293,8 @@ body {
 .header {
   background-color: #fff;
   position: relative;
+  width: 100%;
+  z-index: 1000;
 
 }
 .header .navbar-collapse {
@@ -326,6 +328,13 @@ body {
   background: #fff;
   z-index: 999;
   width: 100%;
+  display: flex;
+ 
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    max-width: 1200px;
+    margin: 0 auto;
 }
 .get-quote {
   margin-top: 12px;
@@ -338,6 +347,7 @@ body {
 }
 .header .navbar {
   background: none;
+  
   box-shadow: none;
   border: none;
   margin: 0;
@@ -358,7 +368,7 @@ body {
   font-size: 13px;
   font-weight: 700;
   text-transform: capitalize;
-  padding: 25px 15px;
+  padding: 5px;
   position: relative;
   display: inline-block;
 }
